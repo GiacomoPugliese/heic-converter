@@ -14,7 +14,7 @@ def heic_to_jpg(heic_path, jpg_path):
     image.save(jpg_path, format="JPEG")
 
 # Replace with your file paths
-heic_file_path = '/path/to/your/file.heic'
-jpg_file_path = '/path/to/your/output/file.jpg'
+heic_file_path = 'IMG_0695.heic'
+jpg_file_path = 'file.jpg'
 
 heic_to_jpg(heic_file_path, jpg_file_path)
