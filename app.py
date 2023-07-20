@@ -1,46 +1,35 @@
 import streamlit as st
 import pyheif
 from PIL import Image
-import io
-import requests
+import os
 
-def convert_heif_to_jpg(image_id):
-    # Get the file content from Google Drive
-    url = f"https://drive.google.com/uc?id={image_id}"
-    response = requests.get(url)
+# Streamlit title
+st.title('Local HEIF to JPEG Image Viewer')
 
-    # Convert the HEIF image to JPG
-    heif_image = pyheif.read_heif(response.content)
-    jpg_image = Image.frombytes(
-        heif_image.mode,
-        heif_image.size,
-        heif_image.data,
-        "raw",
-        heif_image.mode,
-        heif_image.stride,
-    )
+# Local HEIF file path
+file_path = st.text_input('Enter path to .heic file:', '')
 
-    return jpg_image
+# When user enters a file path
+if file_path:
+    try:
+        # Read HEIF file
+        heif_file = pyheif.read(file_path)
 
-def main():
-    st.title("HEIF to JPG Converter")
-
-    # Input image ID from the user
-    image_id = st.text_input("Enter Google Drive Image ID")
-
-    if st.button("Convert"):
-        if image_id:
-            try:
-                # Convert HEIF to JPG
-                jpg_image = convert_heif_to_jpg(image_id)
-
-                # Display the converted image
-                st.image(jpg_image, caption="Converted Image", use_column_width=True)
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
-        else:
-            st.warning("Please enter a valid Google Drive Image ID")
-
-if __name__ == "__main__":
-    main()
-
+        # Convert to PIL Image
+        image = Image.frombytes(
+            heif_file.mode, 
+            heif_file.size, 
+            heif_file.data,
+            "raw",
+            heif_file.mode,
+            heif_file.stride,
+        )
+        
+        # Save as JPEG
+        jpeg_path = os.path.splitext(file_path)[0] + '.jpg'
+        image.save(jpeg_path, 'JPEG')
+        
+        # Display image
+        st.image(jpeg_path)
+    except Exception as e:
+        st.error(f'Error: {e}')
