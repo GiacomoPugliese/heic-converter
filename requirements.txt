@@ -1,5 +1,4 @@
-pillow
-pyheif
 streamlit
-os
-
+pyheif
+Pillow
+requests
